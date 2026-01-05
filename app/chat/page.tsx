@@ -18,7 +18,10 @@ export default function Home() {
     try {
       const data = JSON.parse(event.data);
       if (data.type == "message") {
-        setText(`${text}${data.user}: ${data.message}\n`);
+        setText(`${text}
+          <span style="font-weight: bold; background-color: #0aa; padding: 4px; border-radius: 4px;">${data.user}:</span> 
+          ${data.message}\n
+        `);
       }
     } catch {
       console.log("this potato failed something");
@@ -67,8 +70,7 @@ export default function Home() {
 
   return (
     <div className="bg-zinc-900 min-h-screen flex flex-col justify-between" onClick={focus}>
-      <div>
-        {text}
+      <div dangerouslySetInnerHTML={{ __html: text }} className="p-2">
       </div>
       <form className="flex flex-row" onSubmit={send}>
         <input
