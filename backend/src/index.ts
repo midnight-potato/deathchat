@@ -1,5 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 import z from 'zod';
+import { checkDeathThreat } from './ai';
 
 export class DeathchatRoom extends DurableObject {
   async fetch() {
@@ -43,7 +44,11 @@ export default {
       const data = SendMessageSchema.parse(await request.json());
 
       const object = env.ROOM.getByName('main');
-      // TODO: use ai to check
+
+      const result = await checkDeathThreat(data.message);
+      if (!result.has_death_threat) {
+        return Response.json({ success: false, reasoning: result.reasoning }, { status: 400 });
+      }
 
       object.broadcast(data);
 
