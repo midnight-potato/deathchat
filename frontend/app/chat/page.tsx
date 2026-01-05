@@ -19,8 +19,8 @@ function Chat() {
       const data = JSON.parse(event.data);
       if (data.type == "message") {
         setText(prev => `${prev}
-          <span style="font-weight: bold; background-color: #0aa; padding: 4px; border-radius: 4px;">${data.user}:</span> 
-          <span>${data.message}</span>
+          <span style="font-weight: bold; background-color: #0aa; padding: 4px; border-radius: 4px; overflow-wrap: break-word;">${data.user}:</span> 
+          <span style="overflow-wrap: break-word;">${data.message}</span>
           <br/>
         `);
       }
@@ -84,7 +84,7 @@ function Chat() {
 
   return (
     <div className="bg-zinc-1000 min-h-screen flex flex-col justify-between" onClick={focus}>
-      <div dangerouslySetInnerHTML={{ __html: text }} className="p-2">
+      <div dangerouslySetInnerHTML={{ __html: text }} className="p-6">
       </div>
       <form className="bg-zinc-900 p-6 flex flex-row gap-4" onSubmit={send}>
         <input
