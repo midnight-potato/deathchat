@@ -1,8 +1,8 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useRef, useEffect, FormEvent, useState } from "react";
+import { useRef, useEffect, FormEvent, useState, Suspense } from "react";
 
-export default function Home() {
+function Chat() {
   const params = useSearchParams();
   const name = params.get("name");
   const socket = new WebSocket(`${location.origin}/api/socket`);
@@ -87,4 +87,12 @@ export default function Home() {
       </form>
     </div>
   );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<p>Loading</p>}>
+      <Chat/>
+    </Suspense>
+  )
 }
