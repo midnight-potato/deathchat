@@ -1,15 +1,29 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useRef, useEffect, FormEvent } from "react";
+import { useRef, useEffect, FormEvent, useState } from "react";
 
 export default function Home() {
   const params = useSearchParams();
   const name = params.get("name");
+  const socket = new WebSocket('wss://localhost');
+
+  const [text, setText] = useState("");
 
   if (!name) {
     alert("name cannot be empty");
     location.href = "/"
   }
+
+  socket.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type == "message") {
+        setText(`${text}${data.user}: ${data.message}\n`);
+      }
+    } catch {
+      console.log("this potato failed something");
+    }
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +68,7 @@ export default function Home() {
   return (
     <div className="bg-zinc-900 min-h-screen flex flex-col justify-between" onClick={focus}>
       <div>
+        {text}
       </div>
       <form className="flex flex-row" onSubmit={send}>
         <input
