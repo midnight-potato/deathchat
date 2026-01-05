@@ -5,7 +5,7 @@ import { useRef, useEffect, FormEvent, useState, Suspense } from "react";
 function Chat() {
   const params = useSearchParams();
   const name = params.get("name");
-  const socket = new WebSocket(`${location.origin}/api/socket`);
+  let socket: WebSocket;
 
   const [text, setText] = useState("");
 
@@ -14,19 +14,31 @@ function Chat() {
     location.href = "/"
   }
 
-  socket.onmessage = (event) => {
+  const onmessage = (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data);
       if (data.type == "message") {
-        setText(`${text}
+        setText(prev => `${prev}
           <span style="font-weight: bold; background-color: #0aa; padding: 4px; border-radius: 4px;">${data.user}:</span> 
-          ${data.message}\n
+          <span>${data.message}</span>
+          <br/>
         `);
       }
     } catch {
       console.log("this potato failed something");
     }
   };
+
+  const onclose = () => {
+    console.log('Socket closed, reconnecting in 1 second')
+    setTimeout(connect, 1000)
+  }
+
+  const connect = () => {
+    socket = new WebSocket(`${location.origin}/api/socket`)
+    socket.onmessage = onmessage
+    socket.onclose = onclose
+  }
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -66,7 +78,9 @@ function Chat() {
 
   useEffect(() => {
     focus();
-  });
+    connect();
+    return () => socket.close();
+  }, []);
 
   return (
     <div className="bg-zinc-900 min-h-screen flex flex-col justify-between" onClick={focus}>
