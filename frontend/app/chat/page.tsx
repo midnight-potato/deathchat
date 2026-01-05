@@ -83,20 +83,20 @@ function Chat() {
   }, []);
 
   return (
-    <div className="bg-zinc-900 min-h-screen flex flex-col justify-between" onClick={focus}>
+    <div className="bg-zinc-1000 min-h-screen flex flex-col justify-between" onClick={focus}>
       <div dangerouslySetInnerHTML={{ __html: text }} className="p-2">
       </div>
-      <form className="flex flex-row" onSubmit={send}>
+      <form className="bg-zinc-900 p-6 flex flex-row gap-4" onSubmit={send}>
         <input
           type="text"
           placeholder="Message"
-          className="bg-zinc-800 w-full p-4 rounded-md"
+          className="bg-zinc-800 w-full px-4 py-2 rounded-md focus:outline-none"
           ref={inputRef}
         />
         <input
           type="submit"
           value="ᯓ➤"
-          className="p-4 m-1 bg-white text-black rounded-md"
+          className="cursor-pointer px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 focus:outline-none focus:bg-gray-200"
         />
       </form>
     </div>
