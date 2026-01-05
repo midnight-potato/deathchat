@@ -5,7 +5,7 @@ import { useRef, useEffect, FormEvent, useState } from "react";
 export default function Home() {
   const params = useSearchParams();
   const name = params.get("name");
-  const socket = new WebSocket('wss://localhost');
+  const socket = new WebSocket('wss://api/socket');
 
   const [text, setText] = useState("");
 
