@@ -41,6 +41,10 @@ export default function Home() {
         `Error "${res.statusText}" occured when sending your message${json? `: ${json.reasoning}` : "."}`
       );
     }
+
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
   }
 
   useEffect(() => {
