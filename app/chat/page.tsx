@@ -1,10 +1,15 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, FormEvent } from "react";
 
 export default function Home() {
   const params = useSearchParams();
   const name = params.get("name");
+
+  if (!name) {
+    alert("name cannot be empty");
+    location.href = "/"
+  }
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -12,15 +17,41 @@ export default function Home() {
     inputRef.current?.focus();
   }
 
+  const send = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    const params = {
+      "user": name,
+      "message": inputRef.current?.value,
+    }
+
+    const res = await fetch("/send", {
+      method: "POST",
+      body: JSON.stringify(params),
+    });
+
+    if (!res.ok) {
+      let json = null;
+
+      try {
+        json = await res.json();
+      } catch (e) {}
+
+      alert(
+        `Error "${res.statusText}" occured when sending your message${json? `: ${json.reasoning}` : "."}`
+      );
+    }
+  }
+
   useEffect(() => {
-    focus()
+    focus();
   });
 
   return (
     <div className="bg-zinc-900 min-h-screen flex flex-col justify-between" onClick={focus}>
       <div>
       </div>
-      <form className="flex flex-row" method="POST">
+      <form className="flex flex-row" onSubmit={send}>
         <input
           type="text"
           placeholder="Message"
