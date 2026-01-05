@@ -54,6 +54,10 @@ function Chat() {
       "message": inputRef.current?.value,
     }
 
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+
     const res = await fetch("/api/send", {
       method: "POST",
       body: JSON.stringify(params),
@@ -69,10 +73,6 @@ function Chat() {
       alert(
         `Error "${res.statusText}" occured when sending your message${json? `: ${json.reasoning}` : "."}`
       );
-    }
-
-    if (inputRef.current) {
-      inputRef.current.value = "";
     }
   }
 
