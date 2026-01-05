@@ -50,7 +50,7 @@ export default {
         return Response.json({ success: false, reasoning: result.reasoning }, { status: 400 });
       }
 
-      object.broadcast(data);
+      await object.broadcast(data);
 
       return Response.json({ success: true });
     }
