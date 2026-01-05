@@ -39,7 +39,7 @@ export default function Home() {
       "message": inputRef.current?.value,
     }
 
-    const res = await fetch("/send", {
+    const res = await fetch("/api/send", {
       method: "POST",
       body: JSON.stringify(params),
     });
