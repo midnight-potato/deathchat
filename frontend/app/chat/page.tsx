@@ -2,12 +2,21 @@
 import { useSearchParams } from "next/navigation";
 import { useRef, useEffect, FormEvent, useState, Suspense } from "react";
 
+const COLORS = [
+  "#B71C1C", "#880E4F", "#4A148C", "#311B92",
+  "#1A237E", "#0D47A1", "#01579B", "#006064",
+  "#004D40", "#1B5E20", "#33691E", "#827717",
+  "#E65100", "#BF360C", "#3E2723", "#263238"
+];
+
 function Chat() {
   const params = useSearchParams();
   const name = params.get("name");
   let socket: WebSocket;
 
   const [text, setText] = useState("");
+  const colorIndex = useRef(0);
+  const userColors = useRef(new Map<string, string>());
 
   if (!name) {
     alert("name cannot be empty");
@@ -18,8 +27,14 @@ function Chat() {
     try {
       const data = JSON.parse(event.data);
       if (data.type == "message") {
+        if (!userColors.current.has(data.user)) {
+          userColors.current.set(data.user, COLORS[colorIndex.current]);
+          colorIndex.current = (colorIndex.current + 1) % COLORS.length;
+        }
+        const color = userColors.current.get(data.user);
+        
         setText(prev => `${prev}
-          <span style="font-weight: bold; background-color: #0aa; padding: 4px; border-radius: 4px; overflow-wrap: break-word;">${data.user}:</span> 
+          <span style="font-weight: bold; background-color: ${color}; padding: 4px; border-radius: 4px; overflow-wrap: break-word;">${data.user}:</span> 
           <span style="overflow-wrap: break-word;">${data.message}</span>
           <br/>
         `);
