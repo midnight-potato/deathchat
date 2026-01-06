@@ -9,14 +9,20 @@ const COLORS = [
   "#E65100", "#BF360C", "#3E2723", "#263238"
 ];
 
+const getHash = (str: string) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+};
+
 function Chat() {
   const params = useSearchParams();
   const name = params.get("name");
   let socket: WebSocket;
 
   const [text, setText] = useState("");
-  const colorIndex = useRef(0);
-  const userColors = useRef(new Map<string, string>());
 
   if (!name) {
     alert("name cannot be empty");
@@ -27,11 +33,9 @@ function Chat() {
     try {
       const data = JSON.parse(event.data);
       if (data.type == "message") {
-        if (!userColors.current.has(data.user)) {
-          userColors.current.set(data.user, COLORS[colorIndex.current]);
-          colorIndex.current = (colorIndex.current + 1) % COLORS.length;
-        }
-        const color = userColors.current.get(data.user);
+        const hash = getHash(data.user);
+        const index = Math.abs(hash) % COLORS.length;
+        const color = COLORS[index];
         
         setText(prev => `${prev}
           <span style="font-weight: bold; background-color: ${color}; padding: 4px; border-radius: 4px; overflow-wrap: break-word;">${data.user}:</span> 
