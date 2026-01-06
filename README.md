@@ -5,4 +5,5 @@ this will be validated by an ai that rejects your message if it isn't a death th
 the frontend is in `frontend/` :exploding_head:
 this should be built as a static export and put in a folder `public/` in the backend.
 
-the backend is in `backend/`
+the backend is in `backend/` :exploding_head:
+this can be deployed with scripts/deploy.sh or something idk its 1:30am
