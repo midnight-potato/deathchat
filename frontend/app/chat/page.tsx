@@ -83,7 +83,7 @@ function Chat() {
   }, []);
 
   return (
-    <div className="bg-zinc-1000 min-h-[100dvh] flex flex-col justify-between" onClick={focus}>
+    <div className="bg-zinc-1000 max-h-[100dvh] flex flex-col justify-between" onClick={focus}>
       <div dangerouslySetInnerHTML={{ __html: text }} className="p-6">
       </div>
       <form className="bg-zinc-900 p-6 flex flex-row gap-4" onSubmit={send}>
