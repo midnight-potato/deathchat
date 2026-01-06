@@ -16,7 +16,7 @@ export class DeathchatRoom extends DurableObject {
   }
 
   broadcast({ message, user }: { message: string; user: string }) {
-    message = message.replace('&', '&smp;').replace('<', '&lt;');
+    message = message.replaceAll('&', '&smp;').replaceAll('<', '&lt;');
     const websockets = this.ctx.getWebSockets();
     for (const websocket of websockets) {
       try {
