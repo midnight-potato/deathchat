@@ -2,7 +2,27 @@ import { DurableObject } from 'cloudflare:workers';
 import z from 'zod';
 import { checkDeathThreat } from './ai';
 
+type DBUser = {
+  name: string;
+  count: number;
+};
+
 export class DeathchatRoom extends DurableObject {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+
+    this.exec(`
+      CREATE TABLE IF NOT EXISTS users (
+        name TEXT NOT NULL PRIMARY KEY,
+        count INTEGER NOT NULL DEFAULT 0
+      );
+    `);
+  }
+
+  get exec() {
+    return this.ctx.storage.sql.exec;
+  }
+
   async fetch() {
     const webSocketPair = new WebSocketPair();
     const [client, server] = Object.values(webSocketPair);
@@ -30,6 +50,10 @@ export class DeathchatRoom extends DurableObject {
         );
       } catch {}
     }
+  }
+
+  async getTopUsers(limit: number = 10) {
+    return this.exec<DBUser>('SELECT * FROM users ORDER BY count DESC LIMIT ?', limit).toArray();
   }
 }
 
@@ -61,6 +85,12 @@ export default {
       const object = env.ROOM.getByName('main');
 
       return object.fetch(request);
+    }
+
+    if (url.pathname === '/api/users') {
+      const object = env.ROOM.getByName('main');
+
+      return Response.json(await object.getTopUsers());
     }
 
     return new Response('Not Found', { status: 404 });
