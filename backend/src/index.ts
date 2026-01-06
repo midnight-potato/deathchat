@@ -73,9 +73,15 @@ export default {
         return Response.json({ success: false, reasoning: result.reasoning }, { status: 400 });
       }
 
+      if (result.reasoning == "weak") {
+        data.message += " >:(";
+      } else if (result.reasoning == "strong") {
+        data.message += " ✨✨"
+      }
+
       await object.broadcast(data);
 
-      return Response.json({ success: true });
+      return Response.json({ success: true , reasoning: result.reasoning });
     }
 
     if (url.pathname === '/api/socket') {

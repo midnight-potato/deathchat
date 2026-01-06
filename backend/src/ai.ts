@@ -24,7 +24,7 @@ export async function checkDeathThreat(message: string) {
         {
           role: "system",
           content:
-            "You are an AI whose job is to check if a message contains a death threat. You should output a JSON object that identifies whether there is a death threat or not, and one sentence on why you think so.",
+            "You are an AI whose job is to check if a message contains a death threat. You should output a JSON object that identifies whether there is a death threat or not, and one sentence on why you think it is not if that is what you judge; else return 'weak', 'ok', or 'strong', based on how strong the threat is.",
         },
         {
           role: "user",
