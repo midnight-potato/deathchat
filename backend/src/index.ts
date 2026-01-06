@@ -11,16 +11,12 @@ export class DeathchatRoom extends DurableObject {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
 
-    this.exec(`
+    this.ctx.storage.sql.exec(`
       CREATE TABLE IF NOT EXISTS users (
         name TEXT NOT NULL PRIMARY KEY,
         count INTEGER NOT NULL DEFAULT 0
       );
     `);
-  }
-
-  get exec() {
-    return this.ctx.storage.sql.exec;
   }
 
   async fetch() {
@@ -50,10 +46,11 @@ export class DeathchatRoom extends DurableObject {
         );
       } catch {}
     }
+    this.ctx.storage.sql.exec('INSERT INTO users (name, count) VALUES (?, 1) ON CONFLICT (name) DO UPDATE SET count = count + 1', user);
   }
 
   async getTopUsers(limit: number = 10) {
-    return this.exec<DBUser>('SELECT * FROM users ORDER BY count DESC LIMIT ?', limit).toArray();
+    return this.ctx.storage.sql.exec<DBUser>('SELECT * FROM users ORDER BY count DESC LIMIT ?', limit).toArray();
   }
 }
 
