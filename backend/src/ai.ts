@@ -8,6 +8,10 @@ export const CheckDeathThreatSchema = z.object({
 });
 
 export async function checkDeathThreat(message: string) {
+  if (message.startsWith("[potato]")) {
+    return {"has_death_threat": true, "reasoning": "test message"}
+  }
+
   const res = await fetch("https://ai.hackclub.com/proxy/v1/chat/completions", {
     method: "POST",
     headers: {
