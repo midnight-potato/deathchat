@@ -9,11 +9,11 @@ export default function Home() {
       alert(`an error occured: ${res.status} ${res.statusText}`);
     }
 
-    const data: {user: string, count: number}[] = await res.json();
+    const data: {name: string, count: number}[] = await res.json();
     data.sort((a, b) => b.count - a.count);
 
     for (const a of data) {
-      output += `${a.user}: ${a.count} threats sent\n`;
+      output += `${a.name}: ${a.count} threats sent\n`;
     }
 
     alert(output);
